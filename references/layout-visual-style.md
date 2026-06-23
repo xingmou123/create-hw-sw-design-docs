@@ -153,7 +153,7 @@ Screen generated candidates for:
 - inconsistent color meaning
 - image title inside the diagram
 
-Maintain an imagegen evidence log:
+Maintain an imagegen evidence log as internal QA evidence only:
 
 - figure number
 - prompt summary or prompt file
@@ -174,7 +174,7 @@ When the user asks to optimize, unify, add, or replace figures, the output must 
 The cover/TOC page should look like an engineering release document:
 
 - centered product name and document title
-- version and delivery status under the title
+- release status under the title
 - compact metadata table
 - real Word TOC based on Heading styles
 - single-column or two-column TOC chosen by rendered readability
@@ -186,15 +186,14 @@ The cover communicates seriousness through structure and spacing, not decoration
 
 Do not force a two-column TOC when it makes the page cramped. For dense software/hardware design documents, a single-column TOC with clean hierarchy, dotted leaders, right-aligned page numbers, and enough whitespace is often more formal than a squeezed two-column layout. A TOC that spans two pages is acceptable if it reads like a release document rather than a generated index.
 
-## V1.3 Baseline Lesson
+## Internal Layout Reference
 
-Use the V1.3-style sample as a readability and page-composition baseline, not as a final coverage limit.
+Use earlier sample documents only as internal page-composition references, not as visible version names or revision labels.
 
 Preserve:
 
-- centered document title and version
+- centered document title and release status
 - compact metadata table
-- clean revision record
 - clean TOC with dotted leaders, page numbers, and readable hierarchy
 - deep teal headings and restrained table styling
 - system page composition with architecture figure, runtime flow, and explanation table
@@ -206,6 +205,8 @@ Improve:
 - make every custom explanatory figure traceable to imagegen
 - avoid accepting sparse hardware documents with only one high-level block diagram
 - avoid letting a polished TOC hide weak mechanism coverage
+
+For final/external/formal/mass-production documents, do not show revision records, version-comparison notes, AI/readability labels, imagegen/hash evidence, prompt notes, or audit results in the visible DOCX.
 
 ## First System Design Page Pattern
 

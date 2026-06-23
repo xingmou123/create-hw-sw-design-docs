@@ -1,4 +1,4 @@
 interface:
   display_name: "软硬件设计文档"
-  short_description: "生成中文软硬件详细设计 DOCX，包含工程图、图源 hash 证据和审计结果"
-  default_prompt: "使用 $create-hw-sw-design-docs，根据我的项目描述生成软件/硬件详细设计说明书 DOCX，并补充工程图、图源 hash 证据和审计结果。"
+  short_description: "生成中文软硬件详细设计 DOCX，按正式交付/量产方案口径组织正文、工程图和内部校验"
+  default_prompt: "使用 $create-hw-sw-design-docs，根据我的项目描述生成软件/硬件详细设计说明书 DOCX；最终交付版按完整量产方案口径组织正文，外发文件不包含修订记录、AI 生成痕迹、图源 hash 或审计过程说明。"

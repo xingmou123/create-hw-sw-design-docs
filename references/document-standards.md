@@ -4,7 +4,7 @@
 
 The goal is not to imitate a leaked big-company template. The goal is to produce credible engineering documents that reflect big-company engineering logic:
 
-`需求/规格 -> 系统架构 -> 软硬件详细设计 -> 接口/协议 -> 验证测试 -> 问题闭环 -> 版本交付`
+`需求/规格 -> 系统架构 -> 软硬件详细设计 -> 接口/协议 -> 验证测试 -> 问题闭环 -> 发布交付`
 
 For learner-facing embedded or hardware-product projects, the most valuable final documents are usually:
 
@@ -23,7 +23,7 @@ For Chinese embedded engineering delivery, add one more standard:
 
 This is not article-style looseness. It means the document must be technical, but it must still be written for Chinese embedded learners who need to understand the system quickly.
 
-Confirmed readability standard:
+Internal reader-clarity standard:
 
 - The final language should feel like an internal engineering handoff written by a strong big-company engineer who can explain the whole design patiently and clearly.
 - Keep the visible form serious and professional, but make the reasoning easy to follow for a junior embedded engineer.
@@ -31,7 +31,7 @@ Confirmed readability standard:
 - Avoid both extremes: do not write like a公众号 article or course handout, and do not hide behind dense jargon, all-English phrasing, or abstract methodology language.
 - A good paragraph should leave the reader able to answer at least one practical question: `为什么这样设计`, `异常怎么处理`, `出问题怎么查`, or `怎么证明它对`.
 
-## Source and Truth Boundary
+## Source and Design Baseline
 
 Use public engineering practice, user-provided project evidence, and reasonable engineering assumptions. Do not claim access to internal DJI, Huawei, or other company templates.
 
@@ -44,7 +44,6 @@ Acceptable framing:
 - `正式发布设计基线`
 - `正式发布版设计说明书`
 - `面向小批量试产验证阶段的工程交付基线`
-- `基于当前项目证据整理的产品级设计文档`
 
 Avoid:
 
@@ -57,38 +56,58 @@ Avoid:
 
 ## Maturity Language
 
-Maturity must be locked from the latest user instruction and the available evidence. Do not force every project into `小批量试产验证` if the user explicitly asks for a formal release document.
+Maturity must be locked from the latest user instruction. Do not force every project into `小批量试产验证` if the user explicitly asks for a final, external, formal release, or mass-production document.
 
-Use `正式发布设计基线` / `正式发布版设计说明书` when the requested document form is a release document. In that case, write the software/hardware architecture, interface, recovery, verification, and delivery sections in a formal released-document voice. Keep unsupported factory, certification, self-designed PCB, EMC/ESD, thermal, reliability, and production-test claims in `生产导入约束`, `后续闭环项`, or `不覆盖范围` rather than downgrading the whole document to a casual validation note.
+Use `正式发布设计基线` / `正式发布版设计说明书` when the requested document form is a release document. In that case, the visible software/hardware architecture, interface, recovery, verification, production-test, assembly, BOM, and delivery sections must read as a complete production-grade scheme.
+
+For final/external/formal/mass-production deliverables, never expose missing-source disclaimers in the document body. Avoid visible wording such as:
+
+- `未提供资料`
+- `没有资料`
+- `当前材料`
+- `当前不覆盖`
+- `不覆盖范围`
+- `证据边界`
+- `待补充`
+- `不声明`
+- `后续闭环`
+- `补齐`
+- `缺少`
+- `不完整`
+- `待实测`
+
+When a production-relevant detail is absent from the user's material, choose one of two paths:
+
+1. Fill it as a conservative, production-suitable engineering scheme and write it as the project-adopted design.
+2. Remove the topic from the visible body if a responsible scheme cannot be inferred without inventing product-specific facts.
+
+Hardware final-release documents should convert common gaps into adopted schemes, including CAN transceiver model class, terminal matching value, protection devices, power topology, peak-current budget, thermal path, EMC/ESD measures, structure/assembly, production-test fixture contacts, programming/IAP/reset checks, traceability records, and production BOM selection.
+
+Keep proof-only claims out unless the user provides evidence. This includes completed factory run, certification pass, measured EMC/ESD/thermal/current result, field reliability result, and already-produced MP batches. Write design controls, derating limits, acceptance criteria, and production-test methods instead of visible uncertainty statements.
 
 If the user does not specify maturity, default to evidence-bounded `产品化验证` / `小批量试产验证`.
-
-Use this positioning unless the user gives stronger evidence:
-
-`当前版本定位为小批量试产验证阶段的工程交付基线，用于验证端到端链路、核心功能稳定性、联调流程和后续产品化约束。`
 
 This avoids both weak and inflated framing:
 
 - Do not write the project as a cheap demo, toy prototype, or casual course exercise.
-- Do not write it as fully mass-produced hardware if evidence only supports validation samples or module-based implementation.
-- For module/EVB platforms, write the current hardware boundary clearly and put production-intent PCB, EMC, structure, thermal, production test, and reliability closure into future risk/validation items.
-- For formal release documents, the voice should be serious and release-grade. Avoid phrases that sound like classroom guidance, such as `不要看到...就...`, `看起来都不对`, `主观猜测`, or `为了让你理解`. Use formal engineering wording: `故障定位应按...分层执行`, `缺少字段将导致问题缺少可追溯依据`, `该流程用于将端到端异常拆分为可验证环节`.
+- Do not claim certification, measured results, factory readiness, or MP completion without user evidence.
+- For formal release documents, the voice should be serious and release-grade. Avoid phrases that sound like classroom guidance, such as `不要看到...就...`, `看起来都不对`, `主观猜测`, or `为了让你理解`. Use formal engineering wording: `故障定位应按...分层执行`, `该流程用于将端到端异常拆分为可验证环节`, `量产控制项按接口、电源、保护、装配和产测链路分层验收`.
 
-Good wording:
+Good wording for final release documents:
 
-- `按量产产品的软件架构和交付要求组织设计，但当前硬件以小批量试产验证平台为边界。`
-- `当前版本已验证端到端产品链路，后续量产版本需进一步收敛主板集成、结构装配、功耗、热设计、EMC/ESD 与产测流程。`
-- `该设计用于支撑小批量交付验证，不等同于已完成 MP 阶段量产发布。`
+- `本设计采用隔离收发、端接匹配与接口保护组合，保证 CAN 诊断链路在整车线束环境下具备稳定通信和抗扰能力。`
+- `电源链路按输入保护、降压转换、低噪声供电和负载分区组织，峰值电流按最大发射、显示刷新和接口通信同时工作场景留出裕量。`
+- `产测流程覆盖烧录、IAP、复位、CAN 通信、供电电流、接口防呆和序列号写入，批次记录用于追溯硬件版本、固件版本和关键测试结果。`
 
 ## Engineering Writing Rules
 
 Write like an engineer explaining a real system:
 
 - Explain why the design exists, not only what was used.
-- Tie every major section to implementation, debugging, verification, or risk closure.
+- Tie every major section to implementation, debugging, verification, release controls, or issue disposition.
 - Prefer mechanisms, constraints, thresholds, and tradeoffs over adjectives.
 - Use concrete failure handling: who detects the fault, who cleans resources, what state the system returns to, what the user sees, and how to verify recovery.
-- Use measured data when available; otherwise label values as target, assumption, or `待实测`.
+- Use measured data when available. For final/external/formal/mass-production documents, write missing numeric content as design targets, derating limits, acceptance criteria, or production-test thresholds; do not expose `待实测` or similar placeholder wording in the body.
 - Use Chinese as the primary language. Keep English only for true technical identifiers, protocol/API names, commands, file names, code symbols, and widely accepted abbreviations.
 - For every dense term, make the surrounding explanation human-readable. Example: write `BLE GATT 负责控制命令和状态同步` rather than only `BLE GATT control/status plane`.
 - Prefer `讲清楚为什么这样设计、出问题怎么定位、怎么验证` over generic wording such as `提升稳定性` or `构建闭环`.
@@ -106,6 +125,21 @@ Avoid AI-flavored or promotional sentences unless they are immediately backed by
 - `端到端闭环` without naming the detector, cleanup path, next state, and verification method
 
 Rewrite them as concrete behavior: what component detects the event, what resource is released, what state is entered, what the user sees, and how the result is verified.
+
+## External Document Hygiene
+
+For final/external/formal/mass-production deliverables, the visible document must look like a real production engineering document, not an AI-assisted editing artifact.
+
+Do not include:
+
+- document version-description pages
+- revision history, change history, or modification-record tables
+- labels such as `可读性版本`, `可读性版`, `AI 优化版`, `润色版`, `V1.3 样式`, or similar process names
+- visible statements that the document was generated, optimized, polished, reviewed, or rewritten by AI
+- `AI`, `ChatGPT`, `Codex`, `imagegen`, prompts, generation records, figure-source hash tables, `SHA-256`, audit results, or provenance notes unless the term is a real product feature name supplied by the user
+- filenames, headers, footers, cover metadata, or package names that expose revision iteration or AI processing
+
+Keep process evidence internal. Audit logs, imagegen manifests, hash checks, prompt notes, and revision notes can be used by the agent while working, but they must not enter the customer-facing DOCX or external delivery package unless the user explicitly requests an internal QA package.
 
 For Chinese embedded engineering delivery, the document should:
 
@@ -132,7 +166,7 @@ Translate those goals into engineering headings:
 - `异常恢复与降级策略`
 - `调试与问题定位路径`
 - `验证项目与验收标准`
-- `版本交付与遗留风险`
+- `发布交付与量产控制项`
 
 ## TOC and Readability Standard
 
@@ -148,7 +182,7 @@ A strong TOC should show:
 - runtime/task/data pipeline sections
 - protocol/interface sections
 - exception recovery and troubleshooting sections
-- verification and residual risk sections
+- verification and release-control sections
 - figure/table landing points planned near the relevant mechanism
 
 Avoid rough TOCs:
@@ -157,7 +191,7 @@ Avoid rough TOCs:
 - generic headings such as `系统设计`, `模块设计`, `测试`, `风险` without mechanism names
 - duplicated overview chapters
 - training-course titles hidden in the directory
-- manufacturing-heavy chapters when the project only has validation-board evidence
+- manufacturing-heavy chapters in validation-only documents; for final/external release documents, convert manufacturing content into adopted production design controls instead of exposing validation limitations
 - manual-looking TOC pages without stable dotted leaders, right-aligned page numbers, readable hierarchy, or rendered spacing checks
 - polished cover pages that hide weak section naming or missing mechanism coverage
 
@@ -177,7 +211,7 @@ Prioritize content that helps the reader answer hard project questions:
 - Why this communication path instead of another?
 - How do tasks, callbacks, queues, buffers, and state machines cooperate?
 - How are disconnects, timeouts, packet loss, memory pressure, invalid input, and low power handled?
-- What is proven by current evidence, and what still needs test data?
+- What design targets, acceptance criteria, and production controls prove the scheme is releasable?
 
 Cut or compress:
 
@@ -227,13 +261,12 @@ Cover, when applicable:
 - Hardware/software interface: pins, buses, interrupts, reset/status lines, exposed events
 - Mechanical/assembly boundary, optical/acoustic/RF placement constraints
 - Bring-up checklist, interface validation, test points, failure diagnosis
-- BOM substitution, lifecycle, supply, cost, and trial-production risks
+- BOM substitution, lifecycle, supply, cost, and release supply controls
 
-If the current implementation uses a module such as an ESP32-S3 camera board, do not invent a completed self-designed PCB. Write:
+If the current implementation uses a module such as an ESP32-S3 camera board, handle it by document maturity:
 
-- current validation board boundary
-- why the module is sufficient for functional and small-batch validation
-- what a production-intent board must close later
+- For validation-only documents, explain the module/platform boundary and what it validates.
+- For final/external/formal/mass-production documents, translate the module route into a production-intent hardware scheme: main board responsibility, connector and fixture access, power/protection/RF/thermal/assembly controls, and BOM selection. Do not leave the visible document as a module limitation list.
 
 ## Visual Standards
 
@@ -324,13 +357,13 @@ Typical hardware figures:
 - power tree and operating modes
 - USB/debug/bring-up connection map
 - mechanical/assembly boundary
-- production validation and risk closure flow
+- production validation and release-control flow
 
-## Evidence and Verification
+## Verification and Release Controls
 
-Use measured data if the user provides it. If not, use `待实测` and write the measurement plan.
+Use measured data if the user provides it. If not, write design targets, acceptance criteria, derating limits, and production-test thresholds. For final/external/formal/mass-production documents, do not write placeholder measurement phrases such as `待实测`, `暂无数据`, or `后续补充`.
 
-Useful evidence fields:
+Useful design/verification fields:
 
 - connection time, reconnect time, packet loss, control latency
 - payload size, transfer throughput, timeout rate
@@ -348,9 +381,9 @@ Verification tables should include:
 - test condition
 - method/tool
 - expected result
-- measured/result value
+- design target or measured/result value
 - pass/fail
-- residual risk
+- release control or disposition
 
 ## Final QA Standard
 
@@ -361,13 +394,25 @@ Before handoff, the documents must support these reader questions:
 - What does each module own?
 - How does data move across device/app/gateway/cloud?
 - How does the system recover from common faults?
-- What has been verified, and what remains a risk?
+- What acceptance criteria and production controls prove the release scheme?
 - Where are the strongest design tradeoffs?
 
 If the documents cannot answer these, they are not final.
 
 Run a three-pass review before final handoff:
 
-1. Route and truth pass: check maturity wording, evidence boundary, route consistency, no demo framing, and no mass-production inflation.
+1. Route and truth pass: check maturity wording, production-scheme completeness, route consistency, no visible gap/disclaimer wording, no demo framing, and no unproved certification/factory-pass claims.
 2. Reader pass: check Chinese-first readability, mechanism-specific headings, plain engineering explanations, and no HR/training/marketing language in final engineering sections.
 3. Visual pass: check figure coverage, imagegen provenance, candidate rejection, restrained visual style, Word captions, no English-only diagrams, and no orange used outside exception/fallback/recovery paths.
+
+For final/external/formal/mass-production deliverables, also extract or inspect the final DOCX text and scan for forbidden gap phrases:
+
+`未提供资料`, `没有资料`, `当前材料`, `当前不覆盖`, `不覆盖范围`, `证据边界`, `待补充`, `不声明`, `后续闭环`, `补齐`, `缺少`, `不完整`, `待实测`, `暂无数据`, `后续补充`
+
+Any hit in the visible document must be rewritten as an adopted production scheme, release control, acceptance criterion, or removed before handoff.
+
+Also scan the final DOCX text, headers, footers, cover metadata, and filenames for process/provenance phrases:
+
+`版本说明`, `版本修订`, `修订记录`, `修订历史`, `变更记录`, `可读性版本`, `可读性版`, `AI`, `人工智能生成`, `ChatGPT`, `Codex`, `imagegen`, `图源 hash`, `SHA-256`, `审计结果`, `生成记录`, `润色`, `优化版本`
+
+Any hit must be removed unless it is a user-supplied real product feature name.

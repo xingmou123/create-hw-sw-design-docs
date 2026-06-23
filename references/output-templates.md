@@ -4,9 +4,9 @@
 
 For a hardware product with embedded software, default to:
 
-1. `ProductName_软件详细设计说明书_最终交付版_Vx.y.docx`
-2. `ProductName_硬件详细设计说明书_最终交付版_Vx.y.docx`
-3. Optional `ProductName_最终交付设计文档包_Vx.y.zip`
+1. `ProductName_软件详细设计说明书_正式交付版.docx`
+2. `ProductName_硬件详细设计说明书_正式交付版.docx`
+3. Optional `ProductName_正式交付设计文档包.zip`
 
 Use one merged DOCX only for quick samples or when the user asks for a single file.
 
@@ -16,19 +16,26 @@ Do not treat Markdown as final delivery unless the user explicitly asks for draf
 
 Each final Word document should include:
 
-- cover page with project name, document title, version, date/company/role placeholders when unknown, and evidence boundary
-- revision history
-- document scope and assumptions
+- cover page with project name, document title, release status, date/company/role only when supplied, and release/design baseline
+- document scope and design baseline
 - Word-compatible table of contents based on heading styles
 - TOC page inspected after rendering: dotted leaders, right-aligned page numbers, readable spacing, and no cramped two-column layout
 - consistent Heading 1/2/3 hierarchy
 - explicit Chinese font binding for Word styles and text runs: `ascii`, `hAnsi`, `eastAsia`, and `cs` should resolve to a real Chinese-friendly font such as `Microsoft YaHei` / `微软雅黑`
 - no heading paragraph-format flags that show black square markers when Word formatting marks are enabled, especially `keepNext`, `keepLines`, and `pageBreakBefore`
-- tables for module responsibility, interfaces, protocols, verification, risks, and delivery list
+- tables for module responsibility, interfaces, protocols, verification, release controls, and delivery list
 - figures generated or provided according to the figure plan
 - figure captions in body text; no large figure title inside images
-- footer with document name, version, and page number when feasible
-- versioned filename
+- footer with document name and page number when feasible
+- production-release filename without AI/readability/revision labels
+
+For final/external/formal/mass-production deliverables, do not include:
+
+- document version-description pages
+- revision history tables
+- change records
+- `V1.3`, `可读性版本`, `AI 优化版`, `润色版`, or similar process labels in filenames, cover text, headers, footers, or section titles
+- `AI`, `ChatGPT`, `Codex`, `imagegen`, `图源 hash`, `SHA-256`, `审计结果`, prompt notes, or generation records in the visible DOCX
 
 Before claiming completion:
 
@@ -36,13 +43,15 @@ Before claiming completion:
 - run `scripts/audit_docx.py`
 - run a DOCX style audit for heading black-square markers, missing `eastAsia` font binding, and theme font fallback
 - verify headings, tables, media, drawing nodes, captions, and image count
-- check for obvious blank pages, table overflow, image misplacement, placeholder text, and stale route contradictions
+- check for obvious blank pages, table overflow, image misplacement, placeholder text, stale route contradictions, and visible gap/disclaimer phrases in final external documents
+- for final/external/formal/mass-production deliverables, scan extracted DOCX text for `未提供资料`, `没有资料`, `当前材料`, `当前不覆盖`, `不覆盖范围`, `证据边界`, `待补充`, `不声明`, `后续闭环`, `补齐`, `缺少`, `不完整`, `待实测`, `暂无数据`, and `后续补充`; rewrite hits as adopted production schemes, release controls, acceptance criteria, or remove them before handoff
+- for final/external/formal/mass-production deliverables, scan extracted DOCX text and filenames for `版本说明`, `版本修订`, `修订记录`, `修订历史`, `变更记录`, `可读性版本`, `可读性版`, `AI`, `人工智能生成`, `ChatGPT`, `Codex`, `imagegen`, `图源 hash`, `SHA-256`, `审计结果`, `生成记录`, `润色`, and `优化版本`; remove hits unless the phrase is a user-supplied real product feature name
 
 ## Chapter Map Quality Gate
 
 Before writing the DOCX body, produce a chapter map with these columns:
 
-| Section | Purpose | Key subsections | Tables | Figures | Evidence boundary |
+| Section | Purpose | Key subsections | Tables | Figures | Design/verification basis |
 |---|---|---|---|---|---|
 
 Reject and rewrite the map if:
@@ -52,7 +61,7 @@ Reject and rewrite the map if:
 - software and hardware maps disagree on the product route
 - a visual-heavy section has no planned figure
 - verification appears only as a closing formality instead of a real acceptance matrix
-- risk sections contain generic risk words without specific closure items
+- release-control sections contain generic risk words without specific design controls, acceptance criteria, or release disposition
 
 Good section names are mechanism-specific:
 
@@ -80,7 +89,7 @@ Create this before final generation:
 
 ## Imagegen Evidence Log Template
 
-Create this while generating and screening figures. Include it in the handoff summary or package notes for serious deliveries.
+Create this while generating and screening figures as internal QA evidence only. Do not insert it into final external DOCX files or include it in customer-facing packages unless the user explicitly asks for an internal QA package.
 
 | Figure | Prompt file/summary | Candidate count | Selected imagegen output | Final inserted asset | SHA-256 match | Rejected reasons | Allowed operation |
 |---|---|---:|---|---|---|---|---|
@@ -96,7 +105,7 @@ Rules:
 
 ## Imagegen Purity Manifest
 
-Create a machine-readable manifest beside the DOCX files, for example `imagegen_purity_manifest.json`:
+Create a machine-readable manifest as internal QA evidence, for example `imagegen_purity_manifest.json`:
 
 ```json
 {
@@ -118,7 +127,7 @@ Then run:
 python scripts/audit_imagegen_purity.py --manifest imagegen_purity_manifest.json final-software.docx final-hardware.docx
 ```
 
-The audit must pass before the delivery is called pure imagegen. It fails when a final asset differs from the selected imagegen output or when the final asset bytes are not present in the DOCX media inventory.
+The audit must pass internally before claiming image provenance was checked. Do not include the manifest, hash output, prompt notes, or audit report in external delivery packages unless the user explicitly asks for internal QA files.
 
 Final figure rules:
 
@@ -172,8 +181,8 @@ Target length for rich learner-facing delivery: normally 25-35 pages when the pr
 Use this structure as a starting point:
 
 1. `文档概述`
-   - purpose, reader, scope, evidence boundary, assumptions, version
-   - current maturity: use the user's locked status; use formal release wording such as `正式发布设计基线` when requested, otherwise use evidence-bounded validation wording
+   - purpose, reader, release scope, design baseline
+   - current maturity: use the user's locked status; use formal release wording such as `正式发布设计基线` when requested; for final/external/mass-production documents, do not expose missing-source disclaimers
 
 2. `系统总体设计`
    - product function and end-to-end user flow
@@ -244,13 +253,13 @@ Use this structure as a starting point:
    - smoke/soak, real device, CI, script-based gates
    - figure: verification flow
 
-14. `关键设计取舍与遗留风险`
+14. `关键设计取舍与量产控制项`
    - why this architecture/channel/module split
    - rejected alternatives
-   - current unresolved risks and next validation items
+   - release controls, acceptance criteria, and controlled alternatives
 
-15. `版本发布与交付清单`
-   - version scope, artifacts, configuration, scripts, known issues
+15. `发布与交付清单`
+   - release scope, artifacts, configuration, scripts, issue disposition, and release controls
 
 16. `附录`
    - protocol tables, API schema, configuration keys, glossary, commands
@@ -262,7 +271,7 @@ Target length for rich learner-facing delivery: normally 12-18 pages when the pr
 Use this structure as a starting point:
 
 1. `文档概述`
-   - purpose, scope, evidence boundary, assumptions, current maturity
+   - purpose, release scope, design baseline, current maturity
 
 2. `硬件系统总体设计`
    - hardware role in the product
@@ -306,9 +315,9 @@ Use this structure as a starting point:
    - hardware events exposed to firmware
    - startup/status detection responsibility
 
-10. `结构装配与生产导入边界`
+10. `结构装配与量产导入设计`
    - enclosure/connector/camera/antenna/battery constraints
-   - current module/release-sample boundary vs production-intent hardware
+   - enclosure, connector, fixture access, locking, labeling, and production-intent hardware controls
    - figure: mechanical/assembly boundary
 
 11. `硬件 Bring-up 流程`
@@ -319,17 +328,17 @@ Use this structure as a starting point:
    - power, interface, camera/audio/sensor, wireless, long-run, assembly checks
    - figure: hardware validation flow
 
-13. `BOM、替代料与供应风险`
-   - key parts, alternatives, lifecycle, cost, supply constraints
+13. `BOM、替代料与供应控制`
+   - key parts, alternatives, lifecycle, cost, supply constraints, and release disposition
 
-14. `关键设计取舍与遗留风险`
+14. `关键设计取舍与量产控制项`
    - why this controller/module/power/wireless/assembly path
-   - future production hardware closure items
+   - release controls, acceptance criteria, and controlled alternatives
 
 15. `交付清单`
-   - hardware docs, firmware/app/backend versions, test records, known gaps
+   - hardware docs, firmware/App/backend release identifiers, test records, release controls
 
-For formal release-style deliverables, avoid writing body text like a course note. Use `故障定位流程`, `日志字段`, `定位证据`, `不覆盖范围`, `生产导入约束`, and `后续闭环项` instead of casual phrases such as `排障要`, `不要看到`, `看起来都不对`, or `主观猜测`.
+For formal release-style deliverables, avoid writing body text like a course note or an evidence-gap review. Use `故障定位流程`, `日志字段`, `验收准则`, `量产设计收束`, `量产控制项`, and `发布检查项` instead of casual phrases such as `排障要`, `不要看到`, `看起来都不对`, or `主观猜测`, and never use visible gap phrases such as `不覆盖范围`, `待补充`, `后续闭环项`, or `待实测`.
 
 ## Required Tables
 
@@ -344,7 +353,7 @@ Use tables for dense engineering content:
 - state transition table
 - exception handling table
 - verification matrix
-- risk and residual issue table
+- release-control and issue-disposition table
 - release/delivery checklist
 
 ## Section Writing Pattern
@@ -352,11 +361,11 @@ Use tables for dense engineering content:
 For every important mechanism, use this compact internal structure:
 
 1. `设计目标`: what problem the section solves.
-2. `约束条件`: bandwidth, memory, power, latency, mechanical, cost, or evidence boundary.
+2. `约束条件`: bandwidth, memory, power, latency, mechanical, cost, derating, or release-control basis.
 3. `方案设计`: exact modules, interfaces, states, data structures, or responsibilities.
 4. `设计取舍`: why this design over alternatives.
 5. `异常处理`: timeout, retry, fallback, invalid input, degraded mode, recovery state.
-6. `验证方式`: how to prove it works; include measured data if available.
+6. `验证方式`: how to prove it works; include measured data if available, otherwise use design targets, acceptance criteria, and production-test thresholds.
 7. `工程结论`: one concrete takeaway, not a motivational or interview sentence.
 
 ## Final Handoff Template
@@ -365,11 +374,11 @@ Report concisely:
 
 - final `.docx` file paths
 - optional package path
-- checks run
+- checks run internally; do not insert process checks into the external DOCX
 - page count if available
 - image/media count and caption count
 - figure inventory
-- imagegen evidence log summary, selected output hashes, final inserted asset hashes, and `audit_imagegen_purity.py` result
-- remaining assumptions/residual risks
+- internal image/provenance audit status when relevant, without putting hash tables or AI generation notes into the customer-facing DOCX/package
+- release controls and any internal assumptions the user asked to track; do not put missing-source disclaimers into final external documents
 
 Never say final delivery is complete if only an outline, Markdown draft, or unverified document exists.

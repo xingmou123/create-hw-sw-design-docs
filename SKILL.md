@@ -26,6 +26,7 @@ Before drafting, revising, or generating final deliverables, read:
 - `references/document-standards.md` for positioning, truth boundaries, writing rules, visual rules, and quality gates.
 - `references/output-templates.md` for Word structure, figure plans, recommended software/hardware chapter maps, and required tables.
 - `references/layout-visual-style.md` for the restrained cover/TOC layout, figure taste, route clarity, imagegen screening rules, state-machine style, sequence/data-flow style, and explanation-table composition.
+- `references/parallel-agent-workflow.md` when the task is large enough to benefit from subagents, parallel work is available, or the user asks for faster multi-agent development.
 
 When verifying completed `.docx` files, use:
 
@@ -49,7 +50,14 @@ When verifying completed `.docx` files, use:
    - Do not claim completed mass production, factory readiness, EMC/ESD/thermal certification, self-designed PCB, or manufacturing closure without evidence.
    - Track user-provided facts, verified facts, engineering assumptions, and missing inputs internally. Do not expose this tracking as `证据边界`, `不覆盖`, `待补充`, or similar sections in final external documents.
 
-2. **Design the document set**
+2. **Choose execution mode**
+   - Default to controller-led delivery. The main agent owns route locking, final integration, DOCX generation, final audits, and handoff.
+   - If subagents or parallel agent tools are available and the route is already locked, read `references/parallel-agent-workflow.md` and split bounded work packages for software design, hardware design, figure planning, source/evidence mapping, and QA review.
+   - Do not parallelize body drafting before the user alignment gate, canonical route, release maturity, output package, and visual asset policy are locked.
+   - Subagent outputs are drafts or findings only. The main agent must merge, rewrite, and verify them before any final DOCX is generated.
+   - If subagents are unavailable, use the same role checklist sequentially in the main agent and continue without blocking the user.
+
+3. **Design the document set**
    - Default serious delivery is two separate `.docx` files: software detailed design and hardware detailed design.
    - Use one combined DOCX only for a quick sample or when the user asks for one file.
    - Keep the two documents aligned: same product route, same responsibility boundary, same release status, same figure style.
@@ -57,7 +65,7 @@ When verifying completed `.docx` files, use:
    - Treat audit logs, imagegen manifests, hashes, and process notes as internal working evidence only. Do not insert them into the final DOCX and do not include them in an external delivery package unless the user explicitly asks for internal QA files.
    - Include system overview in both documents when it helps the reader enter the project before subsystem details.
 
-3. **Build the chapter map from project value**
+4. **Build the chapter map from project value**
    - Lead with end-to-end architecture, responsibility boundaries, data/control flow, interfaces, state transitions, exception recovery, design tradeoffs, verification, and release controls.
    - Avoid generic component encyclopedias, long background sections, decorative market prose, and repeated summaries.
    - Build a real chapter map before writing: include H1/H2/H3 depth, section purpose, required tables, figure placement, and design-basis/verification notes.
@@ -67,7 +75,7 @@ When verifying completed `.docx` files, use:
    - Convert learner/interview goals into normal engineering sections. Do not put headings such as `面试重点`, `快速上手`, `训练路线`, or `核心概念` into final engineering docs unless the user explicitly asks for a training appendix.
    - For Chinese learners/readers, prioritize Chinese readability over internationalized-looking English. Keep protocol names, chip names, APIs, commands, and abbreviations in English only where they are the real technical identifier.
 
-4. **Plan figures before writing final DOCX**
+5. **Plan figures before writing final DOCX**
    - Create a figure coverage plan with figure number, target section, purpose, visual type, image generation method, and final caption.
    - Before generating the full document, run an imagegen file-output preflight on one small disposable figure: call the selected imagegen path, then verify that a new image file appeared under `$CODEX_HOME/generated_images/...` or another selected-imagegen output path, and record its path, timestamp, and SHA-256. If no new file is discoverable, stop before DOCX generation and report the imagegen output-path blocker. Do not reuse old generated images.
    - Create an internal imagegen evidence log before final handoff: figure number, prompt summary, candidate count, selected imagegen output path, final inserted asset path, SHA-256 for both files, rejected reason for bad candidates, and allowed non-pixel-changing operations. Keep this log out of external DOCX files and external delivery packages unless the user explicitly asks for internal QA evidence.
@@ -88,7 +96,7 @@ When verifying completed `.docx` files, use:
    - Treat earlier samples only as internal page-composition references. Do not mention sample version names, readability baselines, or revision labels in the visible document.
    - For major system pages, prefer a compound page layout: architecture diagram plus end-to-end sequence/data-flow diagram plus a compact explanation table when space allows. Do not let key design pages feel sparse.
 
-5. **Generate professional Word deliverables**
+6. **Generate professional Word deliverables**
    - Produce `.docx` files as the final artifact. Do not stop at Markdown unless the user explicitly asked for draft/preview text.
    - Use the session's document/DOCX capability when available. If creating DOCX with code, still verify the final Word package.
    - Include cover page, release scope/design baseline, Word-compatible TOC, consistent headings, tables, figures, captions, footer/page numbers, and production-release filenames. Do not include revision-history or version-description pages in final external documents.
@@ -97,7 +105,7 @@ When verifying completed `.docx` files, use:
    - Remove Word paragraph-format flags that show a black square when formatting marks are enabled, especially `keepNext`, `keepLines`, and `pageBreakBefore` on Heading styles and heading paragraphs, unless the user explicitly wants those marks.
    - For serious external delivery, package only approved DOCX/PDF deliverables by default. Keep render evidence, audit logs, imagegen manifests, hash reports, and process notes internal unless the user explicitly asks for an internal QA package.
 
-6. **Verify before final handoff**
+7. **Verify before final handoff**
    - Open or inspect the DOCX before claiming completion.
    - Perform a three-pass final review before handoff:
      1. Route/truth pass: maturity, production-scheme completeness, no visible gap/disclaimer wording, no unproved certification/factory-pass claims, no demo wording, and no route contradictions.
@@ -149,6 +157,9 @@ Do not mark the task complete unless:
 - Final/external/formal/mass-production DOCX files contain no visible version-description pages, revision-history tables, change records, readability-version names, AI-editing notes, imagegen/hash/audit provenance, or wording that suggests the document was generated or polished by AI.
 - External delivery packages exclude internal audit logs, imagegen manifests, hash evidence, prompt notes, and process records unless the user explicitly asks for an internal QA package.
 - Software and hardware documents share the same system route and do not contradict each other.
+- If parallel agents were used, every subagent draft, figure proposal, source/evidence note, and QA finding has been reconciled by the main controller before final DOCX generation.
+- No subagent output is treated as final deliverable text until the main controller has unified route, terminology, maturity language, evidence claims, figure captions, and verification notes across the software and hardware documents.
+- Final DOCX generation, final audits, final package creation, Git operations, and user-facing handoff are performed by the main controller only.
 - The TOC/chapter map is not rough: it has meaningful H2/H3 depth, clear engineering progression, table/figure landing points, and no vague filler sections.
 - Important architecture, protocol, state, recovery, hardware boundary, and verification sections have meaningful figures.
 - The internal imagegen evidence log exists for custom explanatory figures, and every custom explanatory figure inserted into the DOCX is byte-identical to a selected `imagegen` output or an explicitly documented lossless copy.
